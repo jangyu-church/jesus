@@ -1,0 +1,3 @@
+tools/tiles/
+tools/*.npy
+tools/src.json

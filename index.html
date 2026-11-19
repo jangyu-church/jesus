@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>예수님의 길 · 탄생에서 부활까지</title>
+<meta name="description" content="예수님의 탄생과 피난, 열두 살의 유월절, 예루살렘으로 올라가는 길, 마지막 일주일을 실제 지형과 1세기 예루살렘 3D 복원 위에서 따라가고, 당시의 정치·경제·서민의 삶을 함께 봅니다.">
+<meta property="og:title" content="예수님의 길 · 3D 지도">
+<meta property="og:description" content="베들레헴에서 골고다까지, 1세기 사회상과 함께 걷는 3D 지도">
+<meta property="og:image" content="thumb.jpg">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#101d1b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="예수님의 길">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;700&family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./" aria-label="처음 화면">
+    <img src="icons/favicon.svg" alt="" width="40" height="40">
+    <span><b>예수님의 길</b><small>FROM BETHLEHEM TO GOLGOTHA</small></span>
+  </a>
+  <nav class="modes" id="modes" aria-label="보기 선택">
+    <button data-mode="land" class="on">탄생과 어린 시절</button>
+    <button data-mode="jeru">마지막 일주일</button>
+    <button data-mode="life">그때의 삶</button>
+  </nav>
+  <div class="actions">
+    <button id="installBtn" class="installBtn" hidden>앱으로 받기</button>
+    <button id="sourceBtn" class="quiet">자료</button>
+    <button id="helpBtn" class="quiet">도움말</button>
+  </div>
+</header>
+<div class="subbar"><nav id="tabs" aria-label="여정 선택"></nav></div>
+
+<main>
+  <section class="map" aria-label="3D 지도">
+    <div class="host" id="host-land"><div class="scene"></div><div class="labels"></div></div>
+    <div class="host" id="host-jeru" hidden><div class="scene"></div><div class="labels"></div></div>
+    <div class="mapTitle" id="mapTitle"></div>
+    <div class="legend" id="legend"></div>
+
+    <div class="tools" role="group" aria-label="지도 도구">
+      <button id="fitBtn" title="전체 보기">전체</button>
+      <button id="moreBtn" class="more" aria-expanded="false">⚙ 설정</button>
+      <button id="viewBtn" title="위에서 보기 / 비스듬히 보기">2D</button>
+      <div class="exag" title="지형 높이"><span>지형</span><button data-exag="1">낮게</button><button data-exag="2" class="on">보통</button><button data-exag="3">높게</button></div>
+      <button id="pinBtn" aria-pressed="false" title="정치·경제·생활 이야기를 지도에 표시">사회상 핀</button>
+      <div class="polityBox" id="polityBox">
+        <button id="polityBtn" aria-pressed="false">정치 지도</button>
+        <div class="era" id="eraBox" hidden><button data-era="bc4" class="on">주전 4년</button><button data-era="ad30">주후 30년</button></div>
+      </div>
+      <button id="modernBtn" aria-pressed="false" title="오늘날 지명">현대 지명</button>
+    </div>
+
+    <div class="player" id="player">
+      <button id="prevBtn" aria-label="이전 장소">⏮</button>
+      <button id="playBtn" class="play" aria-label="따라가기"><span>▶</span><em>따라가기</em></button>
+      <button id="nextBtn" aria-label="다음 장소">⏭</button>
+      <div class="track" id="track"><div class="fill" id="trackFill"></div><div id="ticks"></div></div>
+      <button id="speedBtn" class="speed" aria-label="속도">1×</button>
+    </div>
+    <p class="hint" id="hint">끌어서 이동 · 오른쪽 끌기·두 손가락으로 회전 · 휠·벌리기로 확대</p>
+
+    <section id="life" class="lifePage" hidden aria-label="그때의 삶"></section>
+
+    <div id="loading" role="status"><div class="spin"></div><span id="loadText">지형을 불러오고 있습니다…</span></div>
+    <div id="error" hidden>3D 지도를 불러오지 못했습니다. 최신 크롬·사파리·엣지에서 다시 열어 주세요. 오른쪽(아래)의 해설과 ‘그때의 삶’은 그대로 읽을 수 있습니다.</div>
+  </section>
+
+  <aside id="panel" aria-live="polite">
+    <div id="journeyHead"></div>
+    <div id="stopDetail"></div>
+    <div id="stopList"></div>
+  </aside>
+</main>
+
+<dialog id="help">
+  <button class="close" data-close aria-label="닫기">×</button>
+  <span class="eyebrow">HOW TO USE</span>
+  <h2>지도를 따라 걷는 방법</h2>
+  <h3>세 가지 보기</h3>
+  <p><b>탄생과 어린 시절</b>은 갈릴리에서 이집트까지의 넓은 지형 지도입니다. 탄생과 피난, 열두 살의 유월절, 예루살렘으로 올라가는 마지막 길을 따라갑니다. <b>마지막 일주일</b>은 주후 30년 무렵의 예루살렘을 3D로 복원한 지도에서 일요일부터 부활의 아침까지를 요일별로 따라갑니다. <b>그때의 삶</b>은 당시의 통치자, 화폐와 물가, 세금, 집과 혼인, 먹을거리를 한눈에 정리한 쪽입니다.</p>
+  <h3>따라가기</h3>
+  <p><b>▶ 따라가기</b>를 누르면 길을 따라 사람이 걸어가고, 도착할 때마다 해설이 열립니다. ⏮ ⏭ 로 한 곳씩 옮기고, 1×를 눌러 속도를 바꿉니다.</p>
+  <h3>지도 겹치기</h3>
+  <p><b>사회상 핀</b>을 켜면 지도 곳곳에 💰 경제 · 👑 정치 · 🏠 생활 이야기가 나타납니다. 넓은 지도에서는 <b>정치 지도</b>를 켜고 ‘주전 4년’과 ‘주후 30년’을 바꿔 보며, 헤롯 사후 왕국이 어떻게 나뉘었고 누가 다스렸는지 비교할 수 있습니다.</p>
+  <h3>근거 표시</h3>
+  <p>해설 아래의 꼬리표는 내용의 근거를 구분합니다. <span class="tag text">본문</span> 성경 기록, <span class="tag arch">고고학</span> 발굴 자료, <span class="tag trad">전승</span> 후대 교회 전승, <span class="tag model">학설</span> 학자들의 해석·모델, <span class="tag debate">논쟁</span> 견해가 갈리는 부분입니다.</p>
+</dialog>
+
+<dialog id="sources">
+  <button class="close" data-close aria-label="닫기">×</button>
+  <span class="eyebrow">SOURCES &amp; NOTES</span>
+  <h2>자료와 기준</h2>
+  <h3>본문</h3>
+  <p>마태복음 1–2, 19–28장, 마가복음 10–16장, 누가복음 1–2, 9, 18–24장, 요한복음 11–20장을 기준으로 하고, 지명·인명과 인용은 <b>개역개정</b>을 따랐습니다.</p>
+  <h3>연구 자료</h3>
+  <p>교회에서 제공한 두 연구 정리(「예수 탄생 전후 요셉과 마리아의 동선 및 사건에 대한 사회학적·고고학적 심층 분석」, 「예수 수난주간의 일정과 동선에 대한 성서·사회·고고학적 심층 분석」)를 바탕으로, 요세푸스·필론의 기록과 미쉬나, 나사렛·예루살렘 발굴 보고에서 널리 알려진 내용을 더했습니다. 학자들 사이에 의견이 나뉘는 부분은 해설 안에 함께 밝혔습니다.</p>
+  <h3>1세기 예루살렘 3D 모형</h3>
+  <p>성전산 윤곽은 오늘날 하람 알샤리프(OpenStreetMap)를 따랐고, 성전·뜰의 치수는 미쉬나 「미돗」과 요세푸스의 기록을, 제1·제2성벽과 성문, 궁전의 위치는 발굴 보고를 바탕으로 한 추정선입니다. 집과 나무는 당시 도시의 밀도를 보여 주기 위한 배치이며 실제 집터가 아닙니다.</p>
+  <h3>연대</h3>
+  <p>탄생은 헤롯이 죽은 주전 4년 이전, 수난주간은 주후 30년 또는 33년으로 보는 견해가 많아 두 날짜를 함께 적었습니다.</p>
+  <h3>지형</h3>
+  <p>지형은 공개 지형 자료(Terrain Tiles · Mapzen/AWS Open Data — SRTM, GMTED, ETOPO1 등), 장소 좌표 일부는 OpenStreetMap(ODbL)을 참고했습니다. 지형은 오늘날의 모습이며, 예루살렘 지형에는 현대 도시의 높낮이가 일부 섞여 있습니다. 3D 표시에는 three.js(MIT)를 사용했습니다.</p>
+</dialog>
+
+<section id="installBar" class="installBar" hidden aria-label="앱 설치 안내">
+  <img src="icons/icon-192.png" alt="" width="44" height="44">
+  <div><b>앱으로 받아 두세요</b><small>홈 화면에서 바로 열립니다</small></div>
+  <button id="installBarBtn" class="gold">받기</button>
+  <button id="installBarClose" class="x" aria-label="닫기">×</button>
+</section>
+<dialog id="install">
+  <button class="close" data-close aria-label="닫기">×</button>
+  <span class="eyebrow">INSTALL APP</span>
+  <h2>예수님의 길을 앱으로 받기</h2>
+  <div id="installBody"></div>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
